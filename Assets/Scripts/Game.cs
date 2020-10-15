@@ -9,13 +9,14 @@ public class Game : MonoBehaviour
 {
     private static Game instance;
     
-    public MainMuffin mainMuffin;
+    [FormerlySerializedAs("mainMuffin")] public ObjectButton objectButton;
     public GameObject littleMuffinPrefab;
     public float littleMuffinTossForce;
     public float littleMuffinLifespan;
     public TMP_Text numMuffinsLabel;
+    public UnlockableManager unlockableManager;
 
-    public static MainMuffin MainMuffin => instance.mainMuffin;
+    public static ObjectButton ObjectButton => instance.objectButton;
 
     private int numMuffins;
 
@@ -60,10 +61,10 @@ public class Game : MonoBehaviour
             {
                 Debug.Log($"Clicked on the muffin");
 
-                NumMuffins += 1;
+                OnNewMuffin();
                 
                 // Animate the main muffin
-                mainMuffin.OnClicked();
+                objectButton.OnClicked();
                 
                 // Spawn a little muffin and toss it in a random direction
                 SpawnLittleMuffin();
@@ -71,10 +72,18 @@ public class Game : MonoBehaviour
         }
     }
 
+    private void OnNewMuffin()
+    {
+        NumMuffins += 1;
+        
+        // Check if we've unlocked a new unlockable
+        unlockableManager.OnNewNumMuffins(NumMuffins);
+    }
+
     private void SpawnLittleMuffin()
     {
         // Spawn a little muffin and toss it away from the main muffin
-        var muffin = Instantiate(littleMuffinPrefab, mainMuffin.transform.position, Quaternion.identity);
+        var muffin = Instantiate(littleMuffinPrefab, objectButton.transform.position, Quaternion.identity);
         muffin.GetComponent<Rigidbody>().AddForce(Random.onUnitSphere * littleMuffinTossForce);
         
         // Remove the little muffin after some time

@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using UnityEngine;
 
-public class MainMuffin : MonoBehaviour
+public class ObjectButton : MonoBehaviour
 {
     private Vector3 initalScale;
 
